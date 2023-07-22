@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>256 Colors</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      background-color: #f0f0f0;
+    }
+
+    .color {
+      margin: 0;
+      border: 1px solid black;
+      cursor: pointer;
+    }
+
+    .modal {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 5px;
+      border-radius: 5px;
+      color: white;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dynamically generated rectangles -->
+  <script>
+    const container = document.body;
+    const colorData = [];
+
+    function generateColors() {
+      const canvasWidth = window.innerWidth;
+      const canvasHeight = window.innerHeight;
+      const rows = 16;
+      const cols = 16;
+
+      const rectWidth = Math.floor(canvasWidth / cols);
+      const rectHeight = Math.floor(canvasHeight / rows);
+
+      for (let i = 0; i < 256; i++) {
+        const red = i >> 5 << 5;
+        const green = (i >> 2 & 7) << 5;
+        const blue = (i & 3) << 6;
+        const colorValue = `rgb(${red},${green},${blue})`;
+
+        const colorDiv = document.createElement("div");
+        colorDiv.classList.add("color");
+        colorDiv.style.backgroundColor = colorValue;
+        colorDiv.style.margin = '0px';
+        colorDiv.style.width = rectWidth + 'px';
+        colorDiv.style.height = rectHeight + 'px';
+        colorDiv.addEventListener("mouseover", () => showModal(colorValue, rectWidth, rectHeight));
+        colorDiv.addEventListener("mouseout", hideModal);
+
+        colorData.push({ colorValue });
+        container.appendChild(colorDiv);
+      }
+    }
+
+    function showModal(colorValue, rectWidth, rectHeight) {
+      const modal = document.createElement("div");
+      modal.classList.add("modal");
+      modal.textContent = `RGB: ${colorValue}`;
+
+      const rect = event.target;
+      const rectTop = rect.offsetTop;
+      const rectLeft = rect.offsetLeft;
+
+      modal.style.top = `${rectTop + rectHeight}px`;
+      modal.style.left = `${rectLeft}px`;
+      container.appendChild(modal);
+    }
+
+    function hideModal() {
+      const modal = document.querySelector(".modal");
+      if (modal) {
+        modal.remove();
+      }
+    }
+
+    generateColors();
+  </script>
+</body>
+</html>
